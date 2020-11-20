@@ -4,30 +4,30 @@ package register
 type RgtrType int32
 
 const (
-	// RegisterPostgresql mean
+	// RegisterPostgresql means
 	RegisterPostgresql RgtrType = 1
 
-	// RegisterRedis mean
+	// RegisterRedis means
 	RegisterRedis RgtrType = 2
 
-	// RegisterMySQL mean
+	// RegisterMySQL means
 	RegisterMySQL RgtrType = 3
 
-	// RegisterMongoDB mean
+	// RegisterMongoDB means
 	RegisterMongoDB RgtrType = 4
 )
 
 const (
-	// StoragePostgresql mean
+	// StoragePostgresql means
 	StoragePostgresql string = "StoragePostgresql"
 
-	// StorageRedis mean
+	// StorageRedis means
 	StorageRedis string = "StorageRedis"
 
-	// StorageMySQL mean
+	// StorageMySQL means
 	StorageMySQL string = "StorageMySQL"
 
-	// StorageMongoDB mean
+	// StorageMongoDB means
 	StorageMongoDB string = "StorageMongoDB"
 )
 

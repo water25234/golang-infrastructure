@@ -1,4 +1,4 @@
-package service
+package postgresql
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -18,11 +18,6 @@ func init() {
 	register.Register(rgtrEnum.StoragePostgresql, &DBPostgresql{})
 }
 
-// RegisterDBRun mean
-func RegisterDBRun() {
-	register.Run(rgtrEnum.StoragePostgresql)
-}
-
 // Run mean
 func (db *DBPostgresql) Run() (err error) {
 	registerNew := postgresql.New()
@@ -31,31 +26,15 @@ func (db *DBPostgresql) Run() (err error) {
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"err": err,
-		}).Error("register execute run is failure")
+		}).Error("register postgresql DB execute run is failure")
 		return err
 	}
 
-	db.DB = registerNew.GetStorage()
+	db.DB = registerNew.GetStorage().(*sqlx.DB)
 	return nil
 }
 
 // Get means
 func (db *DBPostgresql) Get() interface{} {
 	return db.DB
-}
-
-// GetPostgresqlDB means
-func GetPostgresqlDB() *sqlx.DB {
-	dbDrive, err := register.Get(rgtrEnum.StoragePostgresql)
-	if err != nil {
-		logrus.WithField("err", err).Panic("get postgresql DB failure")
-		return nil
-	}
-
-	dbConn, ok := dbDrive.(*sqlx.DB)
-	if !ok {
-		logrus.Panic("trasfer db.Drive to sqlx.DB is failure")
-		return nil
-	}
-	return dbConn
 }

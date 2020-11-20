@@ -28,6 +28,9 @@ type AppConfig struct {
 	DBDatabase             string
 	DBUsername             string
 	DBPassword             string
+	RedisHost              string
+	RedisPort              string
+	RedisDB                int
 	LineChannelSecret      string
 	LineChannelAccessToken string
 	GoAddrPort             string
@@ -35,6 +38,7 @@ type AppConfig struct {
 
 // SetAppConfig mean set app config
 func SetAppConfig() {
+	redisDb, _ := strconv.Atoi(os.Getenv("REDIS_DB"))
 	dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
 
 	appConfig = &AppConfig{
@@ -45,6 +49,9 @@ func SetAppConfig() {
 		DBDatabase:             os.Getenv("DB_DATABASE"),
 		DBUsername:             os.Getenv("DB_USERNAME"),
 		DBPassword:             os.Getenv("DB_PASSWORD"),
+		RedisHost:              os.Getenv("REDIS_HOST"),
+		RedisPort:              os.Getenv("REDIS_PORT"),
+		RedisDB:                redisDb,
 		LineChannelSecret:      os.Getenv("LINE_CHANNEL_SECRET"),
 		LineChannelAccessToken: os.Getenv("LINE_CHANNEL_ACCESS_TOKEN"),
 		GoAddrPort:             *goAddrPort,

@@ -4,14 +4,17 @@ import (
 	"sync"
 )
 
-// RgtrConfig mean
+// RgtrConfig means
 type RgtrConfig struct {
 	Register RgtrService
 	Once     *sync.Once
 }
 
-// RgtrService mean
+// RgtrService means
 type RgtrService interface {
+	// Run means
 	Run() (err error)
+
+	// Get means
 	Get() interface{}
 }

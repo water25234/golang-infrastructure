@@ -1,10 +1,12 @@
-package service
+package shortener
 
 import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/water25234/golang-infrastructure/business/shortener"
 	"github.com/water25234/golang-infrastructure/core/register"
+	rsPostgresql "github.com/water25234/golang-infrastructure/core/register/service/postgresql"
+	rsRedis "github.com/water25234/golang-infrastructure/core/register/service/redis"
 	rgtrEnum "github.com/water25234/golang-infrastructure/enum/register"
 )
 
@@ -22,10 +24,10 @@ func RegisterShortenerInterfaceRun() {
 	register.Run(rgtrEnum.InterfaceShortener)
 }
 
-// Run mean
+// Run means
 func (impl *shortenerInterface) Run() (err error) {
 
-	shortenerBiz := shortener.New(GetPostgresqlDB())
+	shortenerBiz := shortener.New(rsPostgresql.GetPostgresqlDB(), rsRedis.GetRedis())
 
 	impl.shortenerBiz = &shortenerBiz
 

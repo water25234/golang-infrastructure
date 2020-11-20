@@ -3,11 +3,13 @@ package register
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
 var (
+	// RegisterServMap describe
 	RegisterServMap = make(map[string]*RgtrConfig)
 
 	// ErrNilRegisterService describe register service is exists
@@ -20,7 +22,7 @@ var (
 	ErrNotRegister = fmt.Errorf("it' not register service")
 )
 
-// Register mean
+// Register means
 func Register(registerServName string, rs RgtrService) (err error) {
 	if len(registerServName) == 0 || rs == nil {
 		panic(ErrNilRegisterService)
@@ -28,7 +30,7 @@ func Register(registerServName string, rs RgtrService) (err error) {
 
 	if _, ok := RegisterServMap[registerServName]; ok {
 		logrus.WithFields(logrus.Fields{
-			"registerServName": registerServName,
+			"Register registerServName": registerServName,
 		}).Error(ErrHasBeenRegisted)
 		return nil
 	}
@@ -48,7 +50,21 @@ func Run(registerServName string) (err error) {
 	}
 
 	RegisterServMap[registerServName].Once.Do(func() {
-		RegisterServMap[registerServName].Register.Run()
+		done := make(chan bool, 1)
+		go func() {
+			RegisterServMap[registerServName].Register.Run()
+			done <- true
+		}()
+
+		select {
+		case <-done:
+			// do something...
+			logrus.WithFields(logrus.Fields{
+				"Run registerServName": registerServName,
+			}).Info("register run success")
+		case <-time.After(time.Minute):
+			panic(fmt.Sprintf("run register service %s failed", registerServName))
+		}
 	})
 
 	return nil
@@ -59,6 +75,5 @@ func Get(registerServName string) (interface{}, error) {
 	if _, ok := RegisterServMap[registerServName]; !ok {
 		return nil, ErrNotRegister
 	}
-
 	return RegisterServMap[registerServName].Register.Get(), nil
 }

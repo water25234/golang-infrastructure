@@ -2,10 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	apiRestfulLiao "github.com/water25234/golang-infrastructure/api/Restful/LiaoLiao"
 	apiRestfulShortener "github.com/water25234/golang-infrastructure/api/Restful/shortener"
-	"github.com/water25234/golang-infrastructure/core/register/service"
-	rgtrService "github.com/water25234/golang-infrastructure/core/register/service"
+	rsPostgresql "github.com/water25234/golang-infrastructure/core/register/service/postgresql"
+	rsRedis "github.com/water25234/golang-infrastructure/core/register/service/redis"
+	rsShortener "github.com/water25234/golang-infrastructure/core/register/service/shortener"
 )
 
 // SetupRouter mean setup router
@@ -26,9 +28,10 @@ func SetupRouter() *gin.Engine {
 		{
 			v1.Use()
 			// put it here for now.
-			service.RegisterDBRun()
-			service.RegisterShortenerInterfaceRun()
-			shortenerBiz := apiRestfulShortener.Handler(rgtrService.GetShortenerBusiness())
+			rsRedis.RegisterRedisRun()
+			rsPostgresql.RegisterDBRun()
+			rsShortener.RegisterShortenerInterfaceRun()
+			shortenerBiz := apiRestfulShortener.Handler(rsShortener.GetShortenerBusiness())
 			shortenerRouting.GET("/:shortenerID", shortenerBiz.GetShortenerURL)
 		}
 	}

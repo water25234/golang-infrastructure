@@ -1,12 +1,13 @@
 package storage
 
-import "github.com/jmoiron/sqlx"
-
 // Storage mean
 type Storage interface {
+	// Init means
 	Init() (err error)
 
-	SetStorage() (err error)
+	// GetStorage means
+	GetStorage() interface{}
 
-	GetStorage() *sqlx.DB
+	// Disconnect means
+	Disconnect()
 }

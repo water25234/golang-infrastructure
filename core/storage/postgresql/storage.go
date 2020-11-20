@@ -64,16 +64,12 @@ func (dbServ *DBServ) Init() (err error) {
 	return nil
 }
 
-// SetStorage mean
-func (dbServ *DBServ) SetStorage() (err error) {
-	if dbServ.DB == nil {
-		return ErrNilDBServDB
-	}
-	Storage.DB = dbServ.DB
-	return nil
+// GetStorage mean
+func (dbServ *DBServ) GetStorage() interface{} {
+	return dbServ.DB
 }
 
-// GetStorage mean
-func (dbServ *DBServ) GetStorage() *sqlx.DB {
-	return dbServ.DB
+// Disconnect mean
+func (dbServ *DBServ) Disconnect() {
+	dbServ.DB.Close()
 }

@@ -4,17 +4,21 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+
+	coreRedis "github.com/water25234/golang-infrastructure/core/storage/redis"
 	"github.com/water25234/golang-infrastructure/repository/shortener"
 )
 
 // New mean shortener.Business by interface
-func New(DB *sqlx.DB) Business {
+func New(db *sqlx.DB, redis coreRedis.Service) Business {
 	return &imple{
-		shortenerRepo: shortener.New(DB),
+		redis:         redis,
+		shortenerRepo: shortener.New(db),
 	}
 }
 
 type imple struct {
+	redis         coreRedis.Service
 	shortenerRepo shortener.ShortenerRepo
 }
 
@@ -23,14 +27,18 @@ var (
 	ErrshortenerIDIsEmpty = fmt.Errorf("shortener id is empty")
 )
 
-func (im *imple) GetShortenerURL(shortenerID string) (shortenerURL string, err error) {
+func (im *imple) GetShortenerURL(shortenerID string) (URLEncode string, err error) {
 	if len(shortenerID) == 0 {
 		return "", ErrshortenerIDIsEmpty
 	}
 
-	getShortenerID, err := im.shortenerRepo.GetShortenerByID(shortenerID)
+	URLEncode, err = im.shortenerRepo.GetShortenerByID(shortenerID)
 	if err != nil {
 		return "", err
 	}
-	return getShortenerID, nil
+
+	decaysecond := 900
+	im.redis.Set("ShortenerURL:"+shortenerID, URLEncode, decaysecond)
+
+	return URLEncode, nil
 }
