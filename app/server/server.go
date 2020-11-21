@@ -9,11 +9,13 @@ import (
 	// "github.com/apex/gateway"
 
 	"github.com/water25234/golang-infrastructure/config"
+	"github.com/water25234/golang-infrastructure/core/logger"
 	"github.com/water25234/golang-infrastructure/router"
 )
 
 func init() {
 	config.SetAppConfig()
+	logger.SetLoggerConfig()
 }
 
 // StartServer mean start server

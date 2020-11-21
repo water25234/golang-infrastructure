@@ -2,7 +2,7 @@ package shortener
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
+	"github.com/water25234/golang-infrastructure/core/logger"
 )
 
 // New mean
@@ -41,14 +41,14 @@ func (impl *shortenerRepo) GetShortenerByID(shortenerID string) (URLEncode strin
 	)
 
 	if err != nil {
-		logrus.WithField("err", err).Error("query administrator info by ID is failure.")
+		logger.Record.WithField("err", err).Error("query administrator info by ID is failure.")
 		return "", err
 	}
 
 	shortener := &shortener{}
 	if rows.Next() {
 		if err := rows.StructScan(&shortener); err != nil {
-			logrus.WithField("err", err).Error("query administrator info by ID scan struct is failure.")
+			logger.Record.WithField("err", err).Error("query administrator info by ID scan struct is failure.")
 			return "", err
 		}
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/water25234/golang-infrastructure/business/shortener"
+	"github.com/water25234/golang-infrastructure/core/logger"
 )
 
 // Handler means
@@ -26,6 +27,8 @@ func (impl *ShortenerAPI) GetShortenerURL(ctx *gin.Context) {
 	if shortenerID == "" {
 		ctx.JSON(http.StatusUnauthorized, GetSuccessResponse("request parameter is failure"))
 	}
+
+	logger.Record.WithField("shortenerID", shortenerID).Error("restful controller test")
 
 	shortenerURL, _ := impl.shortenerBiz.GetShortenerURL(shortenerID)
 

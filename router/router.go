@@ -8,6 +8,8 @@ import (
 	rsPostgresql "github.com/water25234/golang-infrastructure/core/register/service/postgresql"
 	rsRedis "github.com/water25234/golang-infrastructure/core/register/service/redis"
 	rsShortener "github.com/water25234/golang-infrastructure/core/register/service/shortener"
+	log "github.com/water25234/golang-infrastructure/middleware/logger"
+	requestuuid "github.com/water25234/golang-infrastructure/middleware/requestUuid"
 )
 
 // SetupRouter mean setup router
@@ -17,6 +19,7 @@ func SetupRouter() *gin.Engine {
 	// api
 	LiaoLiao := router.Group("/LiaoLiao")
 	{
+		rsPostgresql.RegisterDBRun()
 		LiaoLiao.GET("", apiRestfulLiao.GetLiaoLiaoMessage)
 		LiaoLiao.POST("", apiRestfulLiao.PostLiaoLiaoMessage)
 	}
@@ -24,14 +27,15 @@ func SetupRouter() *gin.Engine {
 	// api
 	v1 := router.Group("/api/v1")
 	{
+		v1.Use(requestuuid.RequestUUID(), log.Logger())
 		shortenerRouting := v1.Group("/shortener")
 		{
-			v1.Use()
 			// put it here for now.
 			rsRedis.RegisterRedisRun()
 			rsPostgresql.RegisterDBRun()
 			rsShortener.RegisterShortenerInterfaceRun()
 			shortenerBiz := apiRestfulShortener.Handler(rsShortener.GetShortenerBusiness())
+
 			shortenerRouting.GET("/:shortenerID", shortenerBiz.GetShortenerURL)
 		}
 	}

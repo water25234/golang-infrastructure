@@ -1,8 +1,6 @@
 package redis
 
 import (
-	"fmt"
-
 	"github.com/sirupsen/logrus"
 
 	"github.com/water25234/golang-infrastructure/core/register"
@@ -23,11 +21,7 @@ func GetRedis() storageRedis.Service {
 		return nil
 	}
 
-	fmt.Println(redisDrive)
-
 	redisService, ok := redisDrive.(*storageRedis.Service)
-
-	fmt.Println(redisService)
 
 	if !ok {
 		logrus.Panic("trasfer db.Drive to redis.Client is failure")
