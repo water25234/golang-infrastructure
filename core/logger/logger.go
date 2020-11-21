@@ -2,6 +2,7 @@ package logger
 
 import (
 	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/water25234/golang-infrastructure/common/random"
@@ -25,7 +26,14 @@ func SetLoggerConfig() {
 	} else {
 		log.SetFormatter(&logrus.JSONFormatter{})
 
-		file, err := os.OpenFile(os.Getenv("APP_LOG_PATH"), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
+		appLogPath := os.Getenv("APP_LOG_PATH")
+		if !fileExists(appLogPath) {
+			path := strings.Split(appLogPath, "/")
+			join := strings.Join(path[:len(path)-1], "/")
+			os.Mkdir(join, 0755)
+		}
+
+		file, err := os.OpenFile(appLogPath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -49,4 +57,12 @@ func SetLoggerField(uuid string) {
 			"RequestUUID": uuid,
 		}),
 	}
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
