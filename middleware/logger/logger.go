@@ -31,6 +31,9 @@ type responseBodyStruct struct {
 // Logger means
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// start execute time
+		startTime := time.GetCurrentMilliUnix()
+
 		bodyLogWriter := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = bodyLogWriter
 
@@ -47,13 +50,7 @@ func Logger() gin.HandlerFunc {
 		// put here for new.
 		log.SetLoggerField(requestUUID)
 
-		// start execute time
-		startTime := time.GetCurrentMilliUnix()
-
 		c.Next()
-
-		// end execute time
-		endTime := time.GetCurrentMilliUnix()
 
 		responseBody := bodyLogWriter.body.String()
 
@@ -66,6 +63,9 @@ func Logger() gin.HandlerFunc {
 				response["json"] = res
 			}
 		}
+
+		// end execute time
+		endTime := time.GetCurrentMilliUnix()
 
 		responseMap := make(map[string]interface{})
 
