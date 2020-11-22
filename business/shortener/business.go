@@ -38,7 +38,10 @@ func (im *imple) GetShortenerURL(shortenerID string) (URLEncode string, err erro
 	}
 
 	decaysecond := 900
-	im.redis.Set("ShortenerURL:"+shortenerID, URLEncode, decaysecond)
+	err = im.redis.Set("ShortenerURL:"+shortenerID, URLEncode, decaysecond)
+	if err != nil {
+		return "", err
+	}
 
 	return URLEncode, nil
 }
