@@ -50,20 +50,23 @@ func Run(registerServName string) (err error) {
 	}
 
 	RegisterServMap[registerServName].Once.Do(func() {
-		done := make(chan bool, 1)
+		ch := make(chan bool, 1)
 		go func() {
 			RegisterServMap[registerServName].Register.Run()
-			done <- true
+			ch <- true
 		}()
 
 		select {
-		case <-done:
+		case <-ch:
 			// do something...
 			logrus.WithFields(logrus.Fields{
 				"Run registerServName": registerServName,
 			}).Info("register run success")
-		case <-time.After(time.Minute):
-			panic(fmt.Sprintf("run register service %s failed", registerServName))
+		case <-time.After(30 * time.Second):
+			close(ch)
+			logrus.WithFields(logrus.Fields{
+				"Run registerServName": registerServName,
+			}).Panic(fmt.Sprintf("run register service %s failed", registerServName))
 		}
 	})
 
