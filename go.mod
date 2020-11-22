@@ -12,4 +12,6 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/line/line-bot-sdk-go v7.6.0+incompatible
 	github.com/sirupsen/logrus v1.7.0
+	github.com/stretchr/testify v1.4.0
+	github.com/vektra/mockery/v2 v2.3.0 // indirect
 )
