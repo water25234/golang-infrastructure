@@ -30,7 +30,7 @@ func SetLoggerConfig() {
 		if !fileExists(appLogPath) {
 			path := strings.Split(appLogPath, "/")
 			join := strings.Join(path[:len(path)-1], "/")
-			os.Mkdir(join, 0755)
+			os.MkdirAll(join, 0755)
 		}
 
 		file, err := os.OpenFile(appLogPath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
